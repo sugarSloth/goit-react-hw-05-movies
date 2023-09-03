@@ -1,58 +1,63 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { getMovies } from 'tmdbApi/tmdb-api';
-import scss from './Movies.module.scss';
+import { useState, useEffect } from 'react';
+import fetchFunc from 'components/services';
+import { NavLink, useLocation, useSearchParams } from 'react-router-dom';
+import Loading from 'components/Loader/Loader';
+import List from 'components/List/List';
+import Error from 'components/Error/Error';
+import SearchForm from 'components/SearchForm/SearchForm';
+import css from './Movies.module.css';
 
-const Searchbar = lazy(() => import('../../components/Searchbar'));
-const MoviesList = lazy(() => import('../../components/MoviesList'));
-const Loader = lazy(() => import('../../components/Loader'));
-
-export default function Movies() {
-  const [searchedMovies, setSearchedMovies] = useState([]);
+const Movies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const query = searchParams.get('query') || '';
+  const [query, setQuery] = useState(searchParams.get('search') ?? '');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [movies, setMovies] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
-    setSearchedMovies([]);
-
-    const fetchMovies = async () => {
-      try {
-        const data = await getMovies(query);
-        if (data.results.length !== 0) {
-          const movies = data.results.map(({ id, poster_path, title }) => {
-            return { id, poster_path, title };
-          });
-          setSearchedMovies(movies);
-        } else {
-          alert(`Movies by your request "${query}" did not found`);
-        }
-      } catch (error) {
-        console.log(`Error in Movies page during getMovies: ${error}`);
-      }
-    };
-
     if (query !== '') {
-      fetchMovies();
+      setIsLoading(true);
+      setError(false);
+      fetchFunc(`search/movie?query=${query}`)
+        .then(({ results }) => {
+          setMovies([...results]);
+        })
+        .catch(() => setError(true))
+        .finally(() => setIsLoading(false));
     }
   }, [query]);
 
-  const updateSearchParams = value => {
-    const searchString = value.searchString;
-    if (query !== searchString) {
-      setSearchParams({ query: searchString });
-    } else {
-      if (query !== '') {
-        alert(`You are actually looking at "${value.searchString}" pictures`);
-      }
-    }
+  const handleSubmit = event => {
+    event.preventDefault();
+    const query = event.target.elements.movie.value.trim();
+
+    if (query === '') return;
+
+    setSearchParams({ search: query });
+    setQuery(query);
+    event.target.reset();
   };
 
+  const moviesList = movies.map(({ id, title }) => (
+    <li key={id} className="list_item">
+      <NavLink to={`/movies/${id}`} state={{ from: location }} className="link">
+        {title}
+      </NavLink>
+    </li>
+  ));
+
   return (
-    <>
-      <Searchbar className={scss.searchbar} onSubmit={updateSearchParams} />
-      <Suspense fallback={<Loader />}>
-        {searchedMovies.length !== 0 && <MoviesList movies={searchedMovies} />}
-      </Suspense>
-    </>
+    <div className={css.movList}>
+      <SearchForm handleSubmit={handleSubmit} />
+      {isLoading && <Loading />}
+      {error && <Error />}
+      {movies && <List children={moviesList} />}
+      {movies.length === 0 && query !== '' && !error && (
+        <p>We've found nothing. Try another query!</p>
+      )}
+    </div>
   );
-}
+};
+
+export default Movies;

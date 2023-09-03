@@ -1,0 +1,15 @@
+.list {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.item {
+  justify-content: baseline;
+}
+
+.name_wrapper {
+  width: 120px;
+  padding-top: 5px;
+}

@@ -1,12 +1,19 @@
-import { InfinitySpin } from 'react-loader-spinner';
-import scss from './Loader.module.scss';
+import { Circles } from 'react-loader-spinner';
+
+const Loader = () => {
+  return (
+    <Circles
+      height="80"
+      width="80"
+      color="var(--active-color)"
+      ariaLabel="circles-loading"
+      wrapperStyle={{
+        justifyContent: 'center',
+      }}
+      wrapperClass=""
+      visible={true}
+    />
+  );
+};
 
 export default Loader;
-
-function Loader() {
-  return (
-    <div className={scss.infinity_spin}>
-      <InfinitySpin width="200" />
-    </div>
-  );
-}

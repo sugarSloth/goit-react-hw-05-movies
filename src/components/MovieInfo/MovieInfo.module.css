@@ -1,0 +1,24 @@
+.wrapper {
+  display: flex;
+  gap: 30px;
+  margin: 30px;
+}
+
+.title {
+  color: #320074;
+}
+
+.rating {
+  color: #6200ff;
+  margin-top: 10px;
+}
+
+.overview {
+  color: #3d0082;
+  margin-top: 20px;
+}
+
+.genres {
+  color: #3d0082;
+  margin-top: 10px;
+}

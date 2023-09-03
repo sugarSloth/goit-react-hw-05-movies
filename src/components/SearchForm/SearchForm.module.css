@@ -1,0 +1,25 @@
+.input {
+  margin: 0 10px 20px 0;
+  width: 200px;
+  font-size: 16px;
+  color: #3f009e;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #37007a;
+  transition: border 0.3s ease;
+}
+
+.input:focus {
+  border: none;
+  outline: 2px solid var(--main-font-color);
+}
+
+.button {
+  cursor: pointer;
+  text-align: center;
+  color: #3f009e;
+  padding: 8px 16px;
+  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #37007a;
+}

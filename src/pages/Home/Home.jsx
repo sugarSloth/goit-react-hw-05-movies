@@ -1,41 +1,44 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
-import { getTrending } from 'tmdbApi/tmdb-api';
-import scss from './Home.module.scss';
+import fetchFunc from 'components/services';
+import { useEffect, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import css from './Home.module.css';
+import Loading from 'components/Loader/Loader';
+import List from 'components/List/List';
+import Error from 'components/Error/Error';
 
-const MoviesList = lazy(() => import('../../components/MoviesList'));
-const Loader = lazy(() => import('../../components/Loader'));
-
-export default function Home() {
-  const [trending, setTrending] = useState([]);
+const Home = () => {
+  const [trends, setTrends] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getTrending();
-        const trendingList = data.results.map(
-          ({ backdrop_path, id, poster_path, title }) => {
-            return { backdrop_path, id, poster_path, title };
-          }
-        );
-        setTrending(trendingList);
-      } catch (error) {
-        console.log(`Error in Home page during getTrending: ${error}`);
-      }
-    };
-
-    fetchData();
+    setIsLoading(true);
+    setError(false);
+    fetchFunc('trending/all/day')
+      .then(({ results }) => {
+        setTrends([...results]);
+      })
+      .catch(() => setError(true))
+      .finally(() => setIsLoading(false));
   }, []);
 
+  const trendsList = trends.map(({ id, title, name }) => (
+    <li key={id} className="list_item">
+      <NavLink to={`/movies/${id}`} state={{ from: location }} className="link">
+        {title ?? name}
+      </NavLink>
+    </li>
+  ));
+
   return (
-    <>
-      <h2 className={scss.title}>Trending today</h2>
-      <Suspense fallback={<Loader />}>
-        {trending.length === 0 ? (
-          <h2>Something going wrong...</h2>
-        ) : (
-          <MoviesList movies={trending} />
-        )}
-      </Suspense>
-    </>
+    <div className={css.movList}>
+      <h2 className={css.title}>Trending today:</h2>
+      {isLoading && <Loading />}
+      {error && <Error />}
+      <List children={trendsList} />
+    </div>
   );
-}
+};
+
+export default Home;
