@@ -20,22 +20,27 @@ const MovieDetails = () => {
   const location = useRef(useLocation());
   const goBackPath = location.current.state?.from ?? '/';
 
+  const defaultPoster =
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb17OLPVxDbgiMnuuXiy3uJoJaUQRsGB6y8Q&usqp=CAU';
+
   useEffect(() => {
     setIsLoading(true);
     setError(false);
     fetchFunc(`/movie/${movieId}?append_to_response=poster_path`)
       .then(data => {
         setTitle(data.title);
-        setPoster(
-          data.poster_path !== null
-            ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
-            : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb17OLPVxDbgiMnuuXiy3uJoJaUQRsGB6y8Q&usqp=CAU'
-        );
+        if (data.poster_path) {
+          setPoster(`https://image.tmdb.org/t/p/w500${data.poster_path}`);
+        } else {
+          setPoster(defaultPoster);
+        }
         setOverview(data.overview);
         setGenres(data.genres.map(genre => genre.name).join(', '));
         setRating(data.vote_average !== 0 ? data.vote_average.toFixed(1) : 0);
       })
-      .catch(() => setError(true))
+      .catch(() => {
+        setError(true);
+      })
       .finally(() => setIsLoading(false));
   }, [movieId]);
 
@@ -49,11 +54,13 @@ const MovieDetails = () => {
       {error && <Error />}
 
       <MovieInfo
-        poster={poster}
-        title={title}
-        rating={rating}
-        overview={overview}
-        genres={genres}
+        poster={isLoading ? defaultPoster : poster}
+        title={isLoading ? 'Loading...' : title || 'No title available'}
+        rating={isLoading ? 'Loading...' : rating || '0.0'}
+        overview={
+          isLoading ? 'Loading...' : overview || 'No overview available'
+        }
+        genres={isLoading ? 'Loading...' : genres || 'No genres available'}
       />
 
       <MovieInfoSeeMore />

@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import fetchFunc from 'components/services';
-import css from './Reviews.module.css';
 import Loading from 'components/Loader/Loader';
 import Error from 'components/Error/Error';
-import List from 'components/List/List';
+import ReviewsList from './ReviewsList';
 
 const Reviews = () => {
   const { movieId } = useParams();
@@ -18,27 +17,17 @@ const Reviews = () => {
     fetchFunc(`movie/${movieId}/reviews`)
       .then(({ results }) => {
         setReviews(results);
-        // console.log(results)
       })
       .catch(() => setError(true))
       .finally(() => setIsLoading(false));
   }, [movieId]);
-
-  const reviewsList = reviews.map(({ author, id, content }) => {
-    return (
-      <li key={id} className={css.item}>
-        <h5>Author: {author}</h5>
-        <p>{content}</p>
-      </li>
-    );
-  });
 
   return (
     <>
       {isLoading && <Loading />}
       {error && <Error />}
       {reviews.length !== 0 ? (
-        <List children={reviewsList} />
+        <ReviewsList reviews={reviews} />
       ) : (
         <p>No information</p>
       )}

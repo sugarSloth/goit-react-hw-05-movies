@@ -10,9 +10,7 @@ const MovieInfo = ({ poster, title, rating, overview, genres }) => {
 
       <div>
         <h2 className={css.title}>{title}</h2>
-        {rating !== 0 ? (
-          <p className={css.rating}>Rating: {rating}/10</p>
-        ) : null}
+        {rating !== 0 && <p className={css.rating}>Rating: {rating}/10</p>}
 
         {overview && (
           <div className={css.overview}>
