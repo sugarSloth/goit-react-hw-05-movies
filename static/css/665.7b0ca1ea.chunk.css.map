@@ -1,1 +1,0 @@
-{"version":3,"file":"static/css/665.7b0ca1ea.chunk.css","mappings":"AAAA,mBACE,mBACA,oCAFF,mBAGI","sources":["pages/Home/Home.module.scss"],"sourcesContent":[".title {\n  margin-bottom: 10px;\n  @media screen and (min-width: 768px) {\n    margin-bottom: 20px;\n  }\n}\n"],"names":[],"sourceRoot":""}
