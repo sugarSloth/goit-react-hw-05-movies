@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import fetchFunc from 'components/services';
 import Loading from 'components/Loader/Loader';
@@ -27,20 +27,14 @@ const Movies = () => {
     }
   }, [query]);
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    const query = event.target.elements.movie.value.trim();
-
-    if (query === '') return;
-
-    setSearchParams({ search: query });
-    setQuery(query);
-    event.target.reset();
+  const handleSearch = newQuery => {
+    setSearchParams({ search: newQuery });
+    setQuery(newQuery);
   };
 
   return (
     <div className={css.movList}>
-      <SearchForm handleSubmit={handleSubmit} />
+      <SearchForm onSearch={handleSearch} />
       {isLoading && <Loading />}
       {error && <Error />}
       {movies.length > 0 && !error && <MoviesList movies={movies} />}

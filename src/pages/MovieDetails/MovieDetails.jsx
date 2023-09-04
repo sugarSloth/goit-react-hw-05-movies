@@ -50,18 +50,18 @@ const MovieDetails = () => {
         ← Go back
       </Link>
 
-      {isLoading && <Loading />}
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <MovieInfo
+          poster={poster || defaultPoster}
+          title={title || 'No title available'}
+          rating={rating || '0.0'}
+          overview={overview || 'No overview available'}
+          genres={genres || 'No genres available'}
+        />
+      )}
       {error && <Error />}
-
-      <MovieInfo
-        poster={isLoading ? defaultPoster : poster}
-        title={isLoading ? 'Loading...' : title || 'No title available'}
-        rating={isLoading ? 'Loading...' : rating || '0.0'}
-        overview={
-          isLoading ? 'Loading...' : overview || 'No overview available'
-        }
-        genres={isLoading ? 'Loading...' : genres || 'No genres available'}
-      />
 
       <MovieInfoSeeMore />
 
