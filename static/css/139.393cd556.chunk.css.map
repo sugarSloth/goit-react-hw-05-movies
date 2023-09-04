@@ -1,1 +1,0 @@
-{"version":3,"file":"static/css/139.393cd556.chunk.css","mappings":"AAAA,qBACE,YACF,CAEA,mBACE,kBACF","sources":["pages/Home/Home.module.css"],"sourcesContent":[".movList {\n  padding: 20px;\n}\n\n.title {\n  margin-bottom: 15px;\n}\n"],"names":[],"sourceRoot":""}
